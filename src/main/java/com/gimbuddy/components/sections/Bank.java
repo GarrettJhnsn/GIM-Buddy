@@ -29,6 +29,7 @@ public class Bank extends JPanel {
     private BankProvider bankProvider;
     private final ItemProvider itemProvider;
     private String groupName;
+    @Setter
     private String serverAddress;
 
     @Inject
@@ -58,7 +59,7 @@ public class Bank extends JPanel {
         bankSelectComboBox.addActionListener(e -> {
             String selectedBank = (String) bankSelectComboBox.getSelectedItem();
             if (bankProvider != null && serverAddress != null) {
-                bankItems = bankProvider.fetchBankItems(selectedBank, serverAddress);
+                bankItems = bankProvider.getBankItems(selectedBank, serverAddress);
                 displayBankItems(bankItems); // Display items after fetching
                 searchField.dispatchEvent(new KeyEvent(searchField, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, KeyEvent.VK_UNDEFINED, '\0')); // Trigger key release event
             }
@@ -109,10 +110,6 @@ public class Bank extends JPanel {
         }
     }
 
-    public void setServerAddress(String serverAddress) {
-        this.serverAddress = serverAddress;
-    }
-
     private void toggleBankPanel() {
         boolean isVisible = bankPanel.isVisible();
         bankPanel.setVisible(!isVisible);
@@ -121,7 +118,7 @@ public class Bank extends JPanel {
         toggleButton.setText(isVisible ? "Bank" : "Hide Bank");
 
         if (!isVisible && groupName != null && !groupName.isEmpty() && serverAddress != null) {
-            bankItems = bankProvider.fetchBankItems("All", serverAddress);
+            bankItems = bankProvider.getBankItems("All", serverAddress);
             displayBankItems(bankItems);
         }
     }
@@ -142,7 +139,7 @@ public class Bank extends JPanel {
             GridBagConstraints gbc = new GridBagConstraints();
 
             int itemPaddingVertical = 8;
-            int itemPaddingHorizontal = 8;
+            int itemPaddingHorizontal = 6;
             int itemSize = 32 + 2 * itemPaddingVertical;
 
             gbc.insets = new Insets(itemPaddingVertical, itemPaddingHorizontal, itemPaddingVertical, itemPaddingHorizontal);

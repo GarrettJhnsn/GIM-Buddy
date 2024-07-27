@@ -2,6 +2,7 @@ package com.gimbuddy.providers;
 
 import net.runelite.api.Item;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.ui.FontManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +19,7 @@ public class ItemProvider {
     public JLabel getItemLabel(Map.Entry<String, Item> entry) {
         JLabel label = new JLabel();
         label.setOpaque(false);
-        label.setPreferredSize(new Dimension(32, 32)); // Fixed size
+        label.setPreferredSize(new Dimension(36, 32));
 
         if (entry == null) {
             label.setIcon(null);
@@ -29,29 +30,55 @@ public class ItemProvider {
         String itemName = entry.getKey();
         Item item = entry.getValue();
         int quantity = item.getQuantity();
-
         int itemId = item.getId();
-        ImageIcon itemIcon = fetchIcon(itemId);
 
+        ImageIcon itemIcon = fetchIcon(itemId);
         label.setIcon(Objects.requireNonNullElseGet(itemIcon, ImageIcon::new));
 
         label.setToolTipText(itemName);
 
         label.setLayout(new BorderLayout());
-        JLabel quantityLabel = new JLabel(String.valueOf(quantity), SwingConstants.LEFT);
-        quantityLabel.setFont(new Font("Arial", Font.BOLD, 10));
-        quantityLabel.setForeground(Color.WHITE);
-        quantityLabel.setOpaque(false);
+        JLabel quantityLabel = getjLabel(quantity);
+
         label.add(quantityLabel, BorderLayout.NORTH);
 
         return label;
     }
 
+    private JLabel getjLabel(int quantity) {
+        JLabel quantityLabel = new JLabel(formatQuantity(quantity), SwingConstants.LEFT) {
+            @Override
+            public void paintComponent(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setColor(Color.BLACK); // Shadow color
+                g2d.drawString(getText(), 1, getHeight()); // Offset shadow
+                g2d.setColor(getForeground());
+                g2d.drawString(getText(), 0, getHeight() - 1); // Original text
+                g2d.dispose();
+            }
+        };
+
+        quantityLabel.setFont(FontManager.getRunescapeSmallFont());
+        quantityLabel.setForeground(quantity >= 100000 ? Color.WHITE : Color.YELLOW);
+        quantityLabel.setOpaque(false);
+        return quantityLabel;
+    }
+
     private ImageIcon fetchIcon(int itemId) {
         try {
-            return new ImageIcon(itemManager.getImage(itemId).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+            return new ImageIcon(itemManager.getImage(itemId).getScaledInstance(36, 32, Image.SCALE_SMOOTH));
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    private String formatQuantity(int quantity) {
+        if (quantity >= 100000) {
+            return (quantity / 1000) + "k";
+        } else if (quantity >= 10000) {
+            return String.format("%.1fk", quantity / 1000.0);
+        } else {
+            return String.valueOf(quantity);
         }
     }
 }
