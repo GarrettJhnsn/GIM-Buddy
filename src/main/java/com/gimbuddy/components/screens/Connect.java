@@ -36,7 +36,7 @@ public class Connect extends JPanel {
 
         String initialServerName = serverNameField.getText();
         if (!initialServerName.isEmpty()) {
-            serverAddress = initialServerName;
+            setServerAddress(initialServerName);
         }
         checkServerStatus();
     }
@@ -87,12 +87,12 @@ public class Connect extends JPanel {
 
         gbc.gridy = 5;
         gbc.insets = new Insets(2, 10, 5, 10);
-        JLabel versionLabel = new JLabel("<html><i style='font-size:small; color:gray;'>0.1-alpha.1</i></html>");
+        JLabel versionLabel = new JLabel("<html><i style='font-size:small; color:gray;'>0.1-alpha.2</i></html>");
         versionLabel.setHorizontalAlignment(JLabel.CENTER);
         contentPanel.add(versionLabel, gbc);
 
         refreshButton.addActionListener(e -> {
-            serverAddress = serverNameField.getText();
+            setServerAddress(serverNameField.getText());
             checkServerStatus();
         });
 
@@ -103,7 +103,7 @@ public class Connect extends JPanel {
             SwingWorker<List<String>, Void> worker = new SwingWorker<>() {
                 @Override
                 protected List<String> doInBackground() {
-                    return groupService.fetchGroupMembers(groupName, serverAddress);
+                    return groupService.getGroupMembers(groupName, serverAddress);
                 }
 
                 @Override
@@ -122,6 +122,14 @@ public class Connect extends JPanel {
             };
             worker.execute();
         });
+    }
+
+    private void setServerAddress(String serverAddress) {
+        if (!serverAddress.startsWith("http://") && !serverAddress.startsWith("https://")) {
+            serverAddress = "http://" + serverAddress;
+        }
+        this.serverAddress = serverAddress;
+        groupService.setServerAddress(serverAddress);
     }
 
     private void checkServerStatus() {
@@ -155,5 +163,4 @@ public class Connect extends JPanel {
             connectButton.setText("Connect");
         }
     }
-
 }

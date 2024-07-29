@@ -2,6 +2,8 @@ package com.gimbuddy.providers;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
+import lombok.Setter;
 import net.runelite.api.Client;
 import net.runelite.api.Friend;
 import net.runelite.api.GameState;
@@ -18,15 +20,17 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class GroupProvider {
     private final Client client;
     private final HttpClient httpClient;
-
-    @Inject
     private final Gson gson;
+
+    @Getter
+    private String currentGroupName;
+    @Setter
+    @Getter
+    private String serverAddress;
 
     @Inject
     public GroupProvider(Client client, Gson gson) {
@@ -44,24 +48,24 @@ public class GroupProvider {
         }
     }
 
-    public List<String> fetchGroupMembers(String groupName, String serverAddress) {
+    public List<String> getGroupMembers(String groupName, String serverAddress) {
         if (isLoggedIn()) {
             String currentUsername = client.getLocalPlayer().getName();
 
             try {
-                String endpoint = serverAddress + "/fetchGroupIronmanMembers/" + groupName;
-
+                String endpoint = serverAddress + "/getGroupIronmanMembers?groupName=" + groupName;
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(endpoint))
                         .GET()
                         .build();
 
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
                 if (response.statusCode() == 200) {
                     List<String> groupMembers = gson.fromJson(response.body(), new TypeToken<List<String>>() {}.getType());
 
                     if (groupMembers.contains(currentUsername)) {
+                        this.currentGroupName = groupName;
+                        this.serverAddress = serverAddress;
                         return groupMembers;
                     } else {
                         JOptionPane.showMessageDialog(null, "Invalid group name or user not in group", "Login Failed", JOptionPane.ERROR_MESSAGE);
@@ -74,10 +78,11 @@ public class GroupProvider {
         return null;
     }
 
-    public String fetchGroupRank(String groupName, String serverAddress) {
+
+    public String getGroupRank(String groupName, String serverAddress) {
         if (isLoggedIn()) {
             try {
-                String endpoint = serverAddress + "/fetchGroupRank/" + groupName;
+                String endpoint = serverAddress + "/getGroupRank?groupName=" + groupName;
 
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(endpoint))
@@ -151,5 +156,12 @@ public class GroupProvider {
             Thread.currentThread().interrupt();
             return false;
         }
+    }
+
+    public String getCurrentUserName() {
+        if (isLoggedIn()) {
+            return client.getLocalPlayer().getName();
+        }
+        return null;
     }
 }
