@@ -33,11 +33,6 @@ We are committed to making constant improvements to GIM Buddy. Stay tuned for re
 * **Docker Integration:** The server comes with a Dockerfile ready to be built, making it easy to deploy the server to any cloud resources. Using Docker ensures that the server environment is consistent across different deployment platforms and always online.
 * **Portable:** The server can be quickly set up on any system that supports Node.js. This portability ensures that you can run the server on your local machine or on any production server without needing extensive configuration.
 
-### **Skill Tracking** 
-* **Track Progress:** Monitor skill levels of group members.
-* **Goal Setting:** Set and share skill level goals with the group.
-* **Visual Indicators:** Use color-coded progress bars to easily identify skill progression.
-
 ## Node.js Server Setup
 
 **Note:** This plugin requires the setup of a Firestore Database and Node.js server at the moment.
