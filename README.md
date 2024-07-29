@@ -9,6 +9,12 @@ If you encounter any issues or have suggestions for improvements, please report 
 
 We are committed to making constant improvements to GIM Buddy. Stay tuned for regular updates that will bring new features, optimizations, and bug fixes.
 
+![image](https://github.com/user-attachments/assets/047e8c98-5029-4123-9f5c-bbe4ade5106d)
+![image](https://github.com/user-attachments/assets/f7da3cea-bb2f-49a3-acac-10101f14164e)
+![image](https://github.com/user-attachments/assets/b121e88c-d84a-4f9c-8feb-b147d85fa6a1)
+![image](https://github.com/user-attachments/assets/786ab8d0-e44a-4f84-811e-66e016dcf703)
+![image](https://github.com/user-attachments/assets/b85e62b3-8ea1-41b9-a1f9-067ba3d23fa8)
+
 ## Changelog
 
 *0.1-alpha.2*
