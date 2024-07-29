@@ -3,6 +3,7 @@ package com.gimbuddy.components.screens;
 import com.gimbuddy.components.Button;
 import com.gimbuddy.components.sections.Bank;
 import com.gimbuddy.components.sections.Members;
+import com.gimbuddy.components.sections.Skills;
 import com.gimbuddy.providers.BankProvider;
 import com.gimbuddy.providers.GroupProvider;
 import com.google.gson.Gson;
@@ -23,6 +24,7 @@ public class Main extends PluginPanel {
     private Members members;
 
     @Getter
+    private Skills skills;
     private Bank bank;
     private final GroupProvider groupService;
 
@@ -63,18 +65,21 @@ public class Main extends PluginPanel {
 
         JPanel titleAndRankPanel = new JPanel(new BorderLayout());
         titleAndRankPanel.add(nameRankPanel, BorderLayout.CENTER);
-
         titleAndRankPanel.setBorder(BorderFactory.createTitledBorder("GIM Buddy"));
 
         members = new Members();
         members.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 10));
+
+        skills = new Skills(gson, groupService);
+        skills.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         bank = new Bank(itemManager);
         bank.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(members, BorderLayout.NORTH);
-        centerPanel.add(bank, BorderLayout.CENTER);
+        centerPanel.add(skills, BorderLayout.CENTER);
+        centerPanel.add(bank, BorderLayout.SOUTH);
 
         home.add(titleAndRankPanel, BorderLayout.NORTH);
         home.add(centerPanel, BorderLayout.CENTER);
@@ -104,7 +109,7 @@ public class Main extends PluginPanel {
 
         groupNameLabel.setText(groupName);
 
-        String groupRank = groupService.fetchGroupRank(groupName, serverAddress);
+        String groupRank = groupService.getGroupRank(groupName, serverAddress);
         groupRankLabel.setText(groupRank);
 
         String updatedMemberList = groupService.updateMemberList(groupMembers);
