@@ -38,14 +38,14 @@ public class ItemProvider {
         label.setToolTipText(itemName);
 
         label.setLayout(new BorderLayout());
-        JLabel quantityLabel = getjLabel(quantity);
+        JLabel quantityLabel = getQuantityLabel(quantity);
 
         label.add(quantityLabel, BorderLayout.NORTH);
 
         return label;
     }
 
-    private JLabel getjLabel(int quantity) {
+    private JLabel getQuantityLabel(int quantity) {
         JLabel quantityLabel = new JLabel(formatQuantity(quantity), SwingConstants.LEFT) {
             @Override
             public void paintComponent(Graphics g) {
@@ -59,7 +59,13 @@ public class ItemProvider {
         };
 
         quantityLabel.setFont(FontManager.getRunescapeSmallFont());
-        quantityLabel.setForeground(quantity >= 100000 ? Color.WHITE : Color.YELLOW);
+        if (quantity >= 1000000) {
+            quantityLabel.setForeground(Color.GREEN);
+        } else if (quantity >= 100000) {
+            quantityLabel.setForeground(Color.WHITE);
+        } else {
+            quantityLabel.setForeground(Color.YELLOW);
+        }
         quantityLabel.setOpaque(false);
         return quantityLabel;
     }
@@ -73,7 +79,9 @@ public class ItemProvider {
     }
 
     private String formatQuantity(int quantity) {
-        if (quantity >= 100000) {
+        if (quantity >= 1000000) {
+            return (quantity / 1000) + "k";
+        } else if (quantity >= 100000) {
             return (quantity / 1000) + "k";
         } else if (quantity >= 10000) {
             return String.format("%.1fk", quantity / 1000.0);
